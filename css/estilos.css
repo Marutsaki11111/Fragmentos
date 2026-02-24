@@ -1,0 +1,207 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: #0e0e12;
+    color: #e0e0e0;
+    transition: background 1s ease;
+    overflow-x: hidden;
+}
+
+/* Layout principal */
+.contenedor-principal {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 40px;
+    min-height: 100vh;
+    padding: 100px 60px;
+}
+
+/* Texto */
+.bloque-texto {
+    flex: 1.2;
+    max-width: 700px;
+}
+
+.texto {
+    line-height: 1.8;
+    font-size: 1.05rem;
+    transition: opacity 0.8s ease;
+}
+
+.fade-out {
+    opacity: 0;
+}
+
+.fade-in {
+    opacity: 1;
+}
+
+/* Imagen */
+.bloque-imagen {
+    flex: 1;
+    max-width: 500px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.bloque-imagen img {
+    width: 100%;
+    border-radius: 10px;
+    opacity: 0.85;
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.bloque-imagen img.fade {
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+/* Menú */
+.menu-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    color: #fff;
+    cursor: pointer;
+    z-index: 1000;
+}
+
+.sidebar {
+    position: fixed;
+    left: -280px;
+    top: 0;
+    width: 280px;
+    height: 100%;
+    background: #111;
+    padding: 40px 20px;
+    transition: left 0.5s ease;
+    z-index: 999;
+}
+
+.sidebar.active {
+    left: 0;
+}
+
+.sidebar ul {
+    list-style: none;
+    margin-top: 30px;
+}
+
+.sidebar li {
+    margin-bottom: 15px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar li:hover {
+    opacity: 0.6;
+}
+
+.menu-title {
+    font-family: 'Playfair Display', serif;
+}
+
+/* Música */
+.music-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: white;
+    z-index: 5;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .contenedor-principal {
+        flex-direction: column;
+        padding: 100px 20px;
+    }
+
+    .bloque-imagen {
+        order: -1;
+        max-width: 100%;
+    }
+
+    .bloque-imagen img {
+        max-height: 300px;
+        object-fit: cover;
+    }
+}
+
+
+
+/* ===============================
+   CANVAS DE AMBIENTACIÓN
+================================ */
+
+#ambientCanvas {
+    image-rendering: optimizeQuality;
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;           /* ← Esto es clave */
+    pointer-events: none;  /* ← No bloquea clicks */
+}
+
+/* ===============================
+   CONTENEDOR PRINCIPAL
+================================ */
+
+.contenedor-principal {
+    position: relative;
+    z-index: 2;
+}
+
+/* ===============================
+   BLOQUE DE TEXTO
+================================ */
+
+.bloque-texto {
+    position: relative;
+    z-index: 3;
+}
+
+/* ===============================
+   TEXTO VISIBLE
+================================ */
+
+.texto {
+    color: #f0f0f0;   /* ← Asegura que no sea negro */
+}
+
+
+.texto,
+#imagenHistoria {
+    transition: 
+        opacity 0.8s ease,
+        transform 0.8s ease,
+        filter 0.8s ease;
+}
+
+.fade-out {
+    opacity: 0;
+    transform: translateY(15px);
+    filter: blur(4px);
+}
+
+.fade-in {
+    opacity: 1;
+    transform: translateY(0px);
+    filter: blur(0px);
+}

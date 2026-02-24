@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Fragmentos de cosas que no despiertan conmigo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="css/estilos.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+</head>
+<body id="body" data-tema="prologo">
+
+    <!-- Botón menú -->
+    <button id="toggleMenu" class="menu-btn">☰</button>
+
+    <!-- Menú lateral -->
+    <aside id="sidebar" class="sidebar">
+        <h2 class="menu-title">Fragmentos</h2>
+        <ul>
+            <li onclick="cambiarHistoria('prologo')">Antes de despertar</li>
+            <li onclick="cambiarHistoria('materia')">Materia sin instrucción</li>
+            <li onclick="cambiarHistoria('moldean')">Los que moldean y se ausentan</li>
+            <li onclick="cambiarHistoria('tierra')">La que aguardaba bajo la tierra</li>
+            <li onclick="cambiarHistoria('noSeQuedo')">Lo que no se quedó</li>
+            <li onclick="cambiarHistoria('margen')">El Margen</li>
+            <li onclick="cambiarHistoria('piezas')">Las piezas no descansan</li>
+            <li onclick="cambiarHistoria('todoSiguio')">El día que todo siguió, menos yo</li>
+            <li onclick="cambiarHistoria('conversacion')">La conversación que nunca ocurrió</li>
+            <li onclick="cambiarHistoria('noIntentarlo')">No voy a intentarlo más</li>
+        </ul>
+    </aside>
+
+    <main class="contenedor-principal">
+        <canvas id="ambientCanvas"></canvas>
+        <div class="bloque-texto">
+            <div id="texto" class="texto fade-in">
+                <!-- AQUÍ SE CARGA LA HISTORIA -->
+            </div>
+        </div>
+
+        <div class="bloque-imagen">
+            <img id="imagenHistoria" src="" alt="Ambientación">
+        </div>
+
+    </main>
+
+    <!-- Botón música -->
+    <button id="musicBtn" class="music-btn">🎧</button>
+    <audio id="bgMusic" loop></audio>
+
+    <script src="js/app.js"></script>
+    
+</body>
+</html>
