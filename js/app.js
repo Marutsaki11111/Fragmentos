@@ -26,6 +26,20 @@ let estrellasMoldean = [];
 let particulasTierra = [];
 let nubesPolvo = [];
 let intensidadTemblor = 0;
+let estrellasNoSeQuedo = [];
+let particulasNoSeQuedo = [];
+let ondasLago = 0;
+let estructurasNoSeQuedo = [];
+let estructuraRota;
+let entidadesFila = [];
+let protagonistaMargen = null;
+let glitchOffset = 0;
+let engranesFondo = [];
+let engranesMedio = [];
+let engranesFrente = [];
+let vaporIndustrial = [];
+let chispas = [];
+let cintaOffset = 0;
 
 function iniciarEstrellas(cantidad = 150) {
     estrellas = [];
@@ -111,6 +125,126 @@ function crearNubeTierra() {
         tiempoVida: 0,
         duracion: Math.random() * 2000 + 1500
     };
+}
+
+function iniciarNoSeQuedo() {
+
+    estrellasNoSeQuedo = [];
+    particulasNoSeQuedo = [];
+
+    // Estrellas suaves (solo arriba)
+    for (let i = 0; i < 120; i++) {
+        estrellasNoSeQuedo.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * (canvas.height * 0.5),
+            size: Math.random() * 1.5,
+            alpha: Math.random() * 0.5 + 0.2
+        });
+    }
+
+    // Partículas grandes suspendidas
+    for (let i = 0; i < 40; i++) {
+        particulasNoSeQuedo.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            size: Math.random() * 4 + 2,
+            speed: Math.random() * 0.1 + 0.05,
+            alpha: Math.random() * 0.15 + 0.05
+        });
+    }
+
+    // Estructuras flotantes lejanas
+for (let i = 0; i < 12; i++) {
+
+    estructurasNoSeQuedo.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * (canvas.height * 0.6),
+        width: Math.random() * 120 + 60,
+        height: Math.random() * 300 + 150,
+        alpha: Math.random() * 0.15 + 0.05,
+        drift: Math.random() * 0.05 + 0.01,
+        tipo: Math.floor(Math.random() * 3),
+        escala: Math.random() * 0.5 + 0.5
+    });
+    }
+
+    let estructuraRota = {
+    x: canvas.width * 0.7,
+    y: canvas.height * 0.35,
+    width: 140,
+    height: 260,
+    fragmentos: []
+};
+
+for (let i = 0; i < 20; i++) {
+    estructuraRota.fragmentos.push({
+        x: 0,
+        y: 0,
+        speedY: Math.random() * 0.3 + 0.1,
+        drift: (Math.random() - 0.5) * 0.2,
+        alpha: Math.random() * 0.4 + 0.2
+    });
+    }
+
+    
+}
+
+function iniciarMargen() {
+
+    entidadesFila = [];
+
+    const centroX = canvas.width / 2;
+    const horizonte = canvas.height * 0.5;
+
+    // Crear fila en perspectiva
+    for (let i = 0; i < 25; i++) {
+
+        let profundidad = i / 25;
+
+        entidadesFila.push({
+            x: centroX,
+            y: horizonte + profundidad * 200,
+            escala: 1 - profundidad * 0.7,
+            alpha: 0.8 - profundidad * 0.6
+        });
+    }
+
+    // Protagonista desplazado
+    protagonistaMargen = {
+        x: canvas.width * 0.25,
+        y: horizonte + 120,
+        width: 20,
+        height: 60
+    };
+}
+
+function iniciarPiezas() {
+
+    engranesFondo = [];
+    engranesMedio = [];
+    engranesFrente = [];
+    vaporIndustrial = [];
+    chispas = [];
+
+    // Engranes fondo (muy grandes, muy lentos)
+    for (let i = 0; i < 5; i++) {
+        engranesFondo.push(crearEngrane(200, 400, 0.001));
+    }
+
+    // Engranes medios
+    for (let i = 0; i < 6; i++) {
+        engranesMedio.push(crearEngrane(120, 220, 0.002));
+    }
+
+    // Engranes frente
+    for (let i = 0; i < 4; i++) {
+        engranesFrente.push(crearEngrane(60, 120, 0.004));
+    }
+
+    // Vapor
+    for (let i = 0; i < 6; i++) {
+        vaporIndustrial.push(crearVapor());
+    }
 }
 
 function render() {
@@ -519,6 +653,594 @@ nubesPolvo.forEach((nube, index) => {
     ctx.restore();
 }
 
+function renderNoSeQuedo() {
+
+    const mitad = canvas.height / 2;
+
+    // ===== 1️⃣ FONDO PROFUNDO =====
+
+    let fondo = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    fondo.addColorStop(0, "#05070c");
+    fondo.addColorStop(0.6, "#0b1020");
+    fondo.addColorStop(1, "#02040a");
+
+    ctx.fillStyle = fondo;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+
+    // ===== 2️⃣ ESTRELLAS SUPERIORES =====
+
+    estrellasNoSeQuedo.forEach(star => {
+
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(180,200,255,${star.alpha})`;
+        ctx.fill();
+    });
+
+
+    // ===== 3️⃣ NEBLINA AZUL LENTA =====
+
+    let neblina = ctx.createRadialGradient(
+        canvas.width / 2,
+        mitad * 0.6,
+        0,
+        canvas.width / 2,
+        mitad * 0.6,
+        canvas.width * 0.8
+    );
+
+    neblina.addColorStop(0, "rgba(80,120,255,0.08)");
+    neblina.addColorStop(1, "rgba(0,0,0,0)");
+
+    ctx.fillStyle = neblina;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+
+ // ===== ESTRUCTURAS FLOTANTES CINEMATOGRÁFICAS =====
+
+ctx.save();
+ctx.filter = "blur(3px)";
+
+estructurasNoSeQuedo.forEach((e, index) => {
+
+    ctx.globalAlpha = e.alpha;
+
+    ctx.save();
+    ctx.translate(e.x, e.y);
+    ctx.scale(e.escala, e.escala);
+
+    ctx.strokeStyle = "rgba(170,200,255,0.35)";
+    ctx.lineWidth = 1.5;
+
+    // DISTORSIÓN SUTIL
+    ctx.transform(
+        1,
+        0,
+        Math.sin(tiempo * 0.1 + index) * 0.05,
+        1,
+        0,
+        0
+    );
+
+    if (e.tipo === 0) {
+        // Marco roto
+        ctx.beginPath();
+        ctx.moveTo(-e.width/2, -e.height/2);
+        ctx.lineTo(e.width/2, -e.height/2);
+        ctx.moveTo(-e.width/2, -e.height/2);
+        ctx.lineTo(-e.width/2, e.height/2);
+        ctx.stroke();
+    }
+
+    if (e.tipo === 1) {
+        // Columna incompleta
+        ctx.beginPath();
+        ctx.moveTo(0, -e.height/2);
+        ctx.lineTo(0, e.height/4);
+        ctx.stroke();
+    }
+
+    if (e.tipo === 2) {
+        // Escalones incompletos
+        for (let i = 0; i < 4; i++) {
+            ctx.strokeRect(
+                -e.width/3,
+                -e.height/2 + i * 50,
+                e.width/1.5,
+                8
+            );
+        }
+    }
+
+    ctx.restore();
+
+    // Movimiento flotante ultra lento
+    e.y += Math.sin(tiempo * 0.1 + index) * 0.05;
+
+});
+
+ctx.restore();
+
+// ===== ESTRUCTURA QUE SE DESINTEGRA =====
+
+if (estructuraRota) {
+
+    ctx.save();
+    ctx.translate(estructuraRota.x, estructuraRota.y);
+
+    ctx.strokeStyle = "rgba(200,220,255,0.4)";
+    ctx.strokeRect(
+        -estructuraRota.width/2,
+        -estructuraRota.height/2,
+        estructuraRota.width,
+        estructuraRota.height
+    );
+
+    estructuraRota.fragmentos.forEach(f => {
+
+        ctx.beginPath();
+        ctx.arc(
+            f.x,
+            f.y,
+            2,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fillStyle = `rgba(180,200,255,${f.alpha})`;
+        ctx.fill();
+
+        f.y += f.speedY;
+        f.x += f.drift;
+
+        if (f.y > estructuraRota.height/2) {
+            f.y = -estructuraRota.height/2;
+            f.x = 0;
+        }
+    });
+
+    ctx.restore();
+}
+
+
+// ===== REFLEJO DE ESTRUCTURAS =====
+
+ctx.save();
+ctx.scale(1, -1);
+ctx.globalAlpha = 0.15;
+ctx.filter = "blur(4px)";
+
+estructurasNoSeQuedo.forEach(e => {
+
+    ctx.strokeStyle = "rgba(120,150,255,0.2)";
+    ctx.lineWidth = 1;
+
+    ctx.strokeRect(
+        e.x - e.width/2,
+        -(e.y + e.height/2 + mitad),
+        e.width,
+        e.height
+    );
+});
+
+ctx.restore();
+
+    // ===== 4️⃣ PARTÍCULAS SUSPENDIDAS =====
+
+    particulasNoSeQuedo.forEach(p => {
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(150,180,255,${p.alpha})`;
+        ctx.fill();
+
+        p.y -= p.speed;
+
+        if (p.y < 0) {
+            p.y = canvas.height;
+            p.x = Math.random() * canvas.width;
+        }
+    });
+
+
+    // ===== 5️⃣ REFLEJO TIPO LAGO =====
+
+    ctx.save();
+    ctx.scale(1, -1);
+    ctx.globalAlpha = 0.25;
+
+    ctx.drawImage(
+        canvas,
+        0,
+        0,
+        canvas.width,
+        mitad,
+        0,
+        -canvas.height,
+        canvas.width,
+        mitad
+    );
+
+    ctx.restore();
+
+
+    // ===== 6️⃣ ONDAS SUAVES =====
+
+    ondasLago += 0.002;
+
+    for (let i = 0; i < 6; i++) {
+
+        ctx.beginPath();
+
+        for (let x = 0; x <= canvas.width; x += 10) {
+
+            let y = mitad + Math.sin(x * 0.01 + ondasLago + i) * 5;
+
+            if (x === 0) {
+                ctx.moveTo(x, y);
+            } else {
+                ctx.lineTo(x, y);
+            }
+        }
+
+        ctx.strokeStyle = "rgba(120,150,255,0.05)";
+        ctx.lineWidth = 1;
+        ctx.stroke();
+    }
+
+
+    // ===== 7️⃣ VIÑETA OSCURA =====
+
+    let vignette = ctx.createRadialGradient(
+        canvas.width / 2,
+        canvas.height / 2,
+        canvas.width * 0.2,
+        canvas.width / 2,
+        canvas.height / 2,
+        canvas.width * 0.8
+    );
+
+    vignette.addColorStop(0, "rgba(0,0,0,0)");
+    vignette.addColorStop(1, "rgba(0,0,0,0.6)");
+
+    ctx.fillStyle = vignette;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
+
+function renderMargen() {
+
+    const centroX = canvas.width / 2;
+    const horizonte = canvas.height * 0.4;
+
+    // ===== 1️⃣ FONDO PROFUNDO =====
+
+    let fondo = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    fondo.addColorStop(0, "#181a20");
+    fondo.addColorStop(1, "#242832");
+
+    ctx.fillStyle = fondo;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+
+    // ===== 2️⃣ SUELO EN PERSPECTIVA REAL =====
+
+    ctx.strokeStyle = "rgba(255,255,255,0.04)";
+    ctx.lineWidth = 1;
+
+    for (let i = -8; i <= 8; i++) {
+
+        ctx.beginPath();
+        ctx.moveTo(centroX + i * 80, canvas.height);
+        ctx.lineTo(centroX, horizonte);
+        ctx.stroke();
+    }
+
+    // Líneas horizontales del suelo
+    for (let i = 1; i <= 8; i++) {
+
+        let y = canvas.height - i * 60;
+
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+        ctx.stroke();
+    }
+
+
+    // ===== 3️⃣ FILA CORRECTA (AVANZA HACIA EL FILTRO) =====
+
+    for (let i = 0; i < 20; i++) {
+
+        let profundidad = i / 20;
+
+        let y = canvas.height - profundidad * (canvas.height - horizonte);
+        let escala = 1 - profundidad * 0.8;
+        let alpha = 0.7 - profundidad * 0.5;
+
+        ctx.save();
+        ctx.translate(centroX, y);
+        ctx.scale(escala, escala);
+        ctx.globalAlpha = alpha;
+
+        ctx.fillStyle = "#cfd2d6";
+        ctx.fillRect(-8, -40, 16, 60);
+
+        ctx.restore();
+    }
+
+
+    // ===== 4️⃣ EL FILTRO (DISTORSIÓN REAL) =====
+
+    let anchoFiltro = 60;
+    let altoFiltro = 160;
+
+    let desplazamiento = Math.sin(tiempo * 8) * 1.5;
+
+    ctx.save();
+    ctx.translate(centroX + desplazamiento, horizonte - 40);
+
+    ctx.strokeStyle = "rgba(255,255,255,0.2)";
+    ctx.lineWidth = 2;
+
+    // Marco principal
+    ctx.strokeRect(-anchoFiltro/2, -altoFiltro/2, anchoFiltro, altoFiltro);
+
+    // Distorsión interna tipo interferencia
+    for (let i = 0; i < 10; i++) {
+
+        ctx.beginPath();
+        ctx.moveTo(
+            -anchoFiltro/2,
+            -altoFiltro/2 + i * 15 + Math.sin(tiempo * 10 + i) * 2
+        );
+        ctx.lineTo(
+            anchoFiltro/2,
+            -altoFiltro/2 + i * 15
+        );
+        ctx.strokeStyle = "rgba(255,255,255,0.08)";
+        ctx.stroke();
+    }
+
+    ctx.restore();
+
+
+    // ===== 5️⃣ EL MARGEN (DESVIACIÓN REAL DEL SUELO) =====
+
+    ctx.fillStyle = "rgba(0,0,0,0.35)";
+    ctx.fillRect(0, 0, canvas.width * 0.3, canvas.height);
+
+    // Protagonista diferente
+    ctx.save();
+
+    let xProta = canvas.width * 0.18;
+    let yProta = canvas.height - 180;
+
+    ctx.translate(xProta, yProta);
+
+    ctx.fillStyle = "rgba(220,220,220,0.9)";
+    ctx.beginPath();
+    ctx.moveTo(0, -50);
+    ctx.lineTo(15, 0);
+    ctx.lineTo(-15, 0);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.restore();
+
+
+    // ===== 6️⃣ VIÑETA PROFUNDA =====
+
+    let vignette = ctx.createRadialGradient(
+        centroX,
+        horizonte,
+        50,
+        centroX,
+        horizonte,
+        canvas.width
+    );
+
+    vignette.addColorStop(0, "rgba(0,0,0,0)");
+    vignette.addColorStop(1, "rgba(0,0,0,0.7)");
+
+    ctx.fillStyle = vignette;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
+
+function crearEngrane(minSize, maxSize, speed) {
+    return {
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * (maxSize - minSize) + minSize,
+        dientes: 12 + Math.floor(Math.random() * 10),
+        rot: Math.random() * Math.PI,
+        speed: speed * (Math.random() > 0.5 ? 1 : -1)
+    };
+}
+
+function dibujarEngrane(e, color) {
+
+    ctx.save();
+    ctx.translate(e.x, e.y);
+    ctx.rotate(e.rot);
+
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+
+    for (let i = 0; i < e.dientes; i++) {
+
+        let angle = (i / e.dientes) * Math.PI * 2;
+        let x1 = Math.cos(angle) * e.radius;
+        let y1 = Math.sin(angle) * e.radius;
+        let x2 = Math.cos(angle) * (e.radius + 20);
+        let y2 = Math.sin(angle) * (e.radius + 20);
+
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+    }
+
+    ctx.beginPath();
+    ctx.arc(0, 0, e.radius, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Núcleo metálico
+    ctx.beginPath();
+    ctx.arc(0, 0, e.radius * 0.3, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(60,60,60,0.6)";
+    ctx.fill();
+    ctx.restore();
+}
+
+function crearVapor() {
+    return {
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: Math.random() * 200 + 100,
+        alpha: Math.random() * 0.1 + 0.05,
+        speed: Math.random() * 0.2 + 0.05
+    };
+}
+
+function renderPiezas() {
+
+    // Vibración sutil global
+    ctx.save();
+    ctx.translate(
+        Math.sin(tiempo * 4) * 0.5,
+        Math.cos(tiempo * 3) * 0.5
+    );
+
+    // Fondo oscuro metálico
+    let grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    grad.addColorStop(0, "#1a1a1a");
+    grad.addColorStop(1, "#0e0e0e");
+
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Luces cenitales industriales
+    for (let i = 0; i < 3; i++) {
+
+    let x = canvas.width * (0.2 + i * 0.3);
+
+    let gradLuz = ctx.createRadialGradient(
+        x, 0, 0,
+        x, canvas.height * 0.6, 400
+    );
+
+    gradLuz.addColorStop(0, "rgba(255,220,150,0.08)");
+    gradLuz.addColorStop(1, "rgba(0,0,0,0)");
+
+    ctx.fillStyle = gradLuz;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+    
+    // ===== ENGRANES FONDO =====
+    ctx.save();
+    ctx.translate(Math.sin(tiempo) * 0.1, 0); // micro desplazamiento fondo
+
+    engranesFondo.forEach(e => {
+        e.rot += e.speed;
+        dibujarEngrane(e, "rgba(120,110,100,0.15)");
+    });
+
+    ctx.restore();
+
+    // ===== ENGRANES FRENTE =====
+    ctx.save();
+    ctx.translate(Math.sin(tiempo) * 0.6, 0); // aún más desplazamiento
+
+    engranesFrente.forEach(e => {
+        e.rot += e.speed;
+        dibujarEngrane(e, "rgba(180,150,120,0.5)");
+    });
+
+    ctx.restore();
+
+    // ===== CINTA TRANSPORTADORA =====
+
+    cintaOffset += 2;
+    if (cintaOffset > 80) cintaOffset = 0;
+
+    ctx.fillStyle = "#222";
+    ctx.fillRect(0, canvas.height * 0.75, canvas.width, 80);
+
+    ctx.fillStyle = "#333";
+
+    for (let i = -1; i < canvas.width / 80; i++) {
+        ctx.fillRect(i * 80 - cintaOffset, canvas.height * 0.75, 60, 80);
+    }
+
+    // ===== ENGRANES FRENTE =====
+    engranesFrente.forEach(e => {
+        e.rot += e.speed;
+        dibujarEngrane(e, "rgba(180,150,120,0.5)");
+    });
+
+
+    // ===== VAPOR =====
+    vaporIndustrial.forEach(v => {
+
+        ctx.beginPath();
+        let gradV = ctx.createRadialGradient(
+            v.x, v.y, 0,
+            v.x, v.y, v.size
+        );
+
+        gradV.addColorStop(0, `rgba(200,200,200,${v.alpha})`);
+        gradV.addColorStop(1, "rgba(0,0,0,0)");
+
+        ctx.fillStyle = gradV;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        v.y -= v.speed;
+
+        if (v.y < -200) {
+            v.y = canvas.height + 100;
+            v.x = Math.random() * canvas.width;
+        }
+    });
+
+
+    // ===== CHISPAS OCASIONALES =====
+
+    if (Math.random() < 0.05) {
+        chispas.push({
+            x: Math.random() * canvas.width,
+            y: canvas.height * 0.7,
+            life: 30
+        });
+    }
+
+    chispas.forEach((c, i) => {
+
+        ctx.fillStyle = "orange";
+        ctx.fillRect(c.x, c.y, 3, 3);
+
+        c.y += 2;
+        c.life--;
+
+        if (c.life <= 0) chispas.splice(i, 1);
+    });
+
+    let sombraInferior = ctx.createLinearGradient(
+    0,
+    canvas.height * 0.6,
+    0,
+    canvas.height
+    );
+
+    sombraInferior.addColorStop(0, "rgba(0,0,0,0)");
+    sombraInferior.addColorStop(1, "rgba(0,0,0,0.6)");
+
+    ctx.fillStyle = sombraInferior;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.restore();
+}
+
 let musicaIniciada = false;
 
 document.addEventListener("click", () => {
@@ -899,8 +1621,9 @@ const historias = {
 
     <p>La figura a mi lado permaneció. No me sostuvo. No me habló. Simplemente se quedó, mientras el sueño se apagaba y yo despertaba con esa calma falsa que engaña durante el día y arde durante la noche.</p>
 
-    <p><strong>Ella no despertó conmigo.</strong><br>
-    <em>El dolor, sí.</em></p>
+    <p>Finalmente me desperte desconcertado, volteé hacia un lado como buscando a esa primer persona, queriendo creer que todo fue solo un mal sueño, <strong>pero solo una cosa desperto conmigo ese dia.</strong></p>
+
+    <em>El dolor.</em></p>
     `,
     imagen: "assets/noSeQuedo.jpg",
     musica: null
@@ -1009,7 +1732,7 @@ const historias = {
     <p>Porque la esperanza no muere cuando te rechazan.<br>
     <em>Muere cuando entiendes que nunca hubo un lugar para ti desde el principio.</em></p>
     `,
-    imagen: "assets/margen.jpg",
+    imagen: "assets/margen.png",
     musica: null
     },
     piezas: {
@@ -1608,13 +2331,15 @@ function prepararAmbientacion(id) {
             break;
 
         case "noSeQuedo":
-            iniciarEstrellas(150);
+            iniciarNoSeQuedo();
             break;
 
         case "margen":
+            iniciarMargen();
             break;
 
         case "piezas":
+            iniciarPiezas();
             break;
 
         case "todoSiguio":
@@ -1729,3 +2454,11 @@ window.addEventListener("load", () => {
         console.log("Autoplay bloqueado:", err);
     });
 });
+
+
+
+
+
+
+
+
